@@ -182,9 +182,6 @@ class Markdown extends Component {
         );
     }
 
-        
-    }
-
     renderBlockQuote(node, key, extras) {
         extras = extras ? Object.assign(extras, { blockQuote: true }) : { blockQuote: true };
         return this.renderBlock(node, key, extras);
