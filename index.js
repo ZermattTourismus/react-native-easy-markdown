@@ -166,7 +166,13 @@ class Markdown extends Component {
         let extras = Utils.concatStyles(null, styles.link);
         let children = this.renderNodes(node.props.children, key, extras);
 
-        if (this.props.onPress) {
+        if (/^(http|https|mailto|www)/.test(href)) {
+            onPress = () => Linking.openURL(href).catch(() => { });
+
+            if (this.props.renderLink) {
+                return this.props.renderLink(href, node.props.title, children);
+            }
+        } else if (this.props.onPress) {
             const deepLinkedScreen = href.split('?')[0];
             const actualScreen = deepLinkedScreen.split('://')[1];
 
