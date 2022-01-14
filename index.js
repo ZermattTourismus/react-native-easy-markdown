@@ -166,16 +166,10 @@ class Markdown extends Component {
         let extras = Utils.concatStyles(null, styles.link);
         let children = this.renderNodes(node.props.children, key, extras);
 
-        if (/^http/.test(href)) {
-            onPress = () => Linking.openURL(node.props.href).catch(() => { });
-
-            if (this.props.renderLink) {
-                return this.props.renderLink(node.props.href, node.props.title, children);
-            }
-        } else {
+        if (this.props.onPress) {
             const deepLinkedScreen = href.split('?')[0];
             const actualScreen = deepLinkedScreen.split('://')[1];
-            
+
             let deepLinkExtras;
             const extraData = href.split('?')[1];
             if (extraData) {
@@ -186,6 +180,12 @@ class Markdown extends Component {
             }
 
             onPress = () => this.props.onPress(this.props.componentId, actualScreen, deepLinkExtras);
+        } else {
+            onPress = () => Linking.openURL(href).catch(() => { });
+
+            if (this.props.renderLink) {
+                return this.props.renderLink(href, node.props.title, children);
+            }
         }
 
         return (
@@ -198,7 +198,7 @@ class Markdown extends Component {
     renderStrongLink(node, key) {
         const { styles } = this.state;
         let extras = Utils.concatStyles(null, styles.strongLink);
-        
+
         // remove the empty spaces (" ") which is the result of the bold markdown charactes from node's children
         for (let i = 0; i < node.props.children.length; i++) {
             if (node.props.children[i] === " ") {
